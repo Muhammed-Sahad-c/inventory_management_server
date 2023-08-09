@@ -4,7 +4,7 @@ import { userModel } from "../model/user-schema.js";
 
 const saltRounds = 10;
 const message_badRequest = `something wen't wrong!`;
-const message_resultNull = `couldn't find email`;
+const message_resultNull = `We do not recognize the email or password`;
 
 const createToken = (data, exp_time) => {
   return jwt.sign({ data }, process.env.JSONWEBTOKEN_SECRET_KEY, {
