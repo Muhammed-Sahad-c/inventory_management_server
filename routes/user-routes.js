@@ -21,3 +21,5 @@ router.get(
   authUser,
   productControllers.getProductDetails
 );
+
+router.post("/removeproduct", authUser, productControllers.removeAProduct);

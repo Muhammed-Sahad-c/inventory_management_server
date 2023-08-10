@@ -19,6 +19,6 @@ export const userAuthentication = (req, res, next) => {
       res.status(401).json({ status: false, message: `couldn't find token` });
     }
   } catch (error) {
-    res.status(401).json({ status: false, message: `something wen't wrong` });
+    res.status(500).json({ status: false, message: `something wen't wrong` });
   }
 };
