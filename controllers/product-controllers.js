@@ -9,30 +9,46 @@ const productFind_errMessage = `Sorry, something went wrong while getting detail
 export const productControllers = {
   createProduct: async (req, res) => {
     try {
-      const cloudinaryDetails = await cloudinary.uploader.upload(
-        req.file.path,
-        {
-          format: "WebP",
-          // transformation: [{ width: 195, height: 195 }],
-        }
-      );
-      fs.unlinkSync(req.file.path);
       const product_details = JSON.parse(req.body.product_details);
       const { name, description, quantity, price } = product_details;
-      const data = {
-        name,
-        price,
-        quantity,
-        description,
-        userId: req.body.user.id,
-        imageUrl: cloudinaryDetails.secure_url,
-      };
-      const newProduct = await productModel.create(data);
-      res.status(201).json({
-        status: true,
-        new_product: newProduct,
-        message: "product created successfully",
+      const isExist = await productModel.findOne({
+        name: name,
+        available: false,
       });
+      if (isExist) {
+        res
+          .status(200)
+          .json({ status: null, message: "This product already exists." });
+      } else {
+        const cloudinaryDetails = await cloudinary.uploader.upload(
+          req.file.path,
+          {
+            format: "WebP",
+            // transformation: [{ width: 195, height: 195 }],
+          }
+        );
+        fs.unlinkSync(req.file.path);
+        const data = {
+          name,
+          price,
+          quantity,
+          description,
+          userId: req.body.user.id,
+          imageUrl: cloudinaryDetails.secure_url,
+        };
+        const newProduct = await productModel.create(data);
+        var newProductDetails = {
+          name,
+          price,
+          _id: newProduct._id,
+          imageUrl: data.imageUrl,
+        };
+        res.status(201).json({
+          status: true,
+          new_product: newProductDetails,
+          message: "product created successfully",
+        });
+      }
     } catch (error) {
       res.status(500).json({ status: false, message: product_errMessage });
     }
@@ -40,10 +56,12 @@ export const productControllers = {
 
   getAllProducts: async (req, res) => {
     try {
-      const products = await productModel.find(
-        { userId: req.body.user.id, available: false },
-        { name: 1, price: 1, imageUrl: 1, _id: 1 }
-      );
+      const products = await productModel
+        .find(
+          { userId: req.body.user.id, available: false },
+          { name: 1, price: 1, imageUrl: 1, _id: 1 }
+        )
+        .sort({ createdAt: -1 });
       res.status(200).json({ status: true, products: products });
     } catch (error) {
       res.status(500).json({
