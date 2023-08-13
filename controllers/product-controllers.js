@@ -1,10 +1,20 @@
 import fs from "fs";
+import mongoose from "mongoose";
 import cloudinary from "../config/cloudinary.js";
 import { productModel } from "../model/product-schema.js";
 
 const product_errMessage = `Sorry, something went wrong while creating the product. Please try again later. `;
 const productDelete_errMessage = `Sorry, something went wrong while removing the product. Please try again later.`;
 const productFind_errMessage = `Sorry, something went wrong while getting details of the product. Please try again later.`;
+
+const uploadToCloudinary = async (image_path) => {
+  const cloudinaryDetails = await cloudinary.uploader.upload(image_path, {
+    format: "WebP",
+    // transformation: [{ width: 195, height: 195 }],
+  });
+  fs.unlinkSync(image_path);
+  return cloudinaryDetails.secure_url;
+};
 
 export const productControllers = {
   createProduct: async (req, res) => {
@@ -102,6 +112,56 @@ export const productControllers = {
       res
         .status(500)
         .json({ status: false, message: productDelete_errMessage });
+    }
+  },
+
+  updateAProduct: async (req, res) => {
+    try {
+      const product_details = JSON.parse(req.body.edited_product_details);
+      const { name, description, quantity, price, imageUrl, prod_id } =
+        product_details;
+      const currentId = new mongoose.Types.ObjectId(prod_id);
+      const hasExist = await productModel.findOne({
+        name: name,
+        available: false,
+        _id: { $ne: currentId },
+      });
+
+      if (!hasExist) {
+        let product_imageUrl = imageUrl;
+        if (product_imageUrl === undefined) {
+          const cloudinaryDetails = await cloudinary.uploader.upload(
+            req.file.path,
+            {
+              format: "WebP",
+            }
+          );
+          fs.unlinkSync(req.file.path);
+          product_imageUrl = cloudinaryDetails.secure_url;
+        }
+
+        const updatedProduct = await productModel.updateOne(
+          { _id: prod_id },
+          {
+            name,
+            description,
+            price: +price,
+            quantity: +quantity,
+            imageUrl: product_imageUrl,
+          }
+        );
+        res.status(201).json({ status: true, newImageUrl: product_imageUrl });
+      } else {
+        res.status(200).json({
+          status: false,
+          message: "This product is already exists",
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: false,
+        message: "somthing went wrong please try again later !",
+      });
     }
   },
 };

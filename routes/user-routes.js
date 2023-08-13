@@ -23,3 +23,9 @@ router.get(
 );
 
 router.post("/removeproduct", authUser, productControllers.removeAProduct);
+router.post(
+  "/updateproduct",
+  upload.single("file"),
+  authUser,
+  productControllers.updateAProduct
+);
