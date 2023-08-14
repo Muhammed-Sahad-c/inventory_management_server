@@ -4,6 +4,7 @@ import { authController } from "../controllers/auth-controller.js";
 import { productControllers } from "../controllers/product-controllers.js";
 import { customerContollers } from "../controllers/customer-controllers.js";
 import { userAuthentication as authUser } from "../middlewares/auth-middleware.js";
+import { reportControllers } from "../controllers/report-controllers.js";
 
 export const router = express.Router();
 
@@ -35,3 +36,18 @@ router.post(
 // customer routes
 router.post("/createcustomer", authUser, customerContollers.createNewCustomer);
 router.get("/getcustomerlist", authUser, customerContollers.getCustomersList);
+
+//sales routes
+router.get(
+  "/getdetailsforsales",
+  authUser,
+  reportControllers.getSalesFormDetails
+);
+router.post("/createnewsale", authUser, reportControllers.createNewSales);
+router.get(
+  "/getinventoryreport",
+  authUser,
+  reportControllers.getInventoryReports
+);
+
+ 

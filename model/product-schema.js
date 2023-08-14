@@ -8,8 +8,10 @@ const productSchema = new Schema(
     quantity: { type: Number },
     imageUrl: { type: String },
     description: { type: String },
+    sold: { type: Number, default: 0 },
     stock: { type: Boolean, default: false },
     available: { type: Boolean, default: false },
+    purchasedCount: { type: Number, default: 0 },
   },
   {
     timestamps: true,

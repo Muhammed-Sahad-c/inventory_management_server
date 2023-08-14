@@ -136,6 +136,7 @@ export const productControllers = {
           {
             name,
             description,
+            stock: false,
             price: +price,
             quantity: +quantity,
             imageUrl: product_imageUrl,
