@@ -49,5 +49,4 @@ router.get(
   authUser,
   reportControllers.getInventoryReports
 );
-
- 
+router.get("/getsalesreport", reportControllers.getSalesReports);

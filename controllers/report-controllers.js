@@ -98,7 +98,6 @@ export const reportControllers = {
           },
         },
       ]);
-      console.log(itemsReport);
       res.status(200).json({ itemsReport });
     } catch (error) {
       res.status(500).json({ message: "Something went wrong try again!" });
@@ -107,6 +106,19 @@ export const reportControllers = {
 
   getSalesReports: async (req, res) => {
     try {
-    } catch (error) {}
+      const details = await salesModel
+        .find({}, { createdAt: 0, updatedAt: 0, __v: 0 })
+        .populate({
+          path: "customerName",
+          select: "customerName -_id",
+        })
+        .populate({
+          path: "product",
+          select: "name price -_id",
+        });
+      res.status(200).json({ details });
+    } catch (error) {
+      res.status(500).json({ message: `Something wen't wrong try again` });
+    }
   },
 };
