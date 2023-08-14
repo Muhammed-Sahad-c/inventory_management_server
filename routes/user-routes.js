@@ -1,9 +1,11 @@
 import express from "express";
-export const router = express.Router();
 import upload from "../middlewares/multer-fileupload.js";
 import { authController } from "../controllers/auth-controller.js";
 import { productControllers } from "../controllers/product-controllers.js";
+import { customerContollers } from "../controllers/customer-controllers.js";
 import { userAuthentication as authUser } from "../middlewares/auth-middleware.js";
+
+export const router = express.Router();
 
 router.get("/login", authController.validateLoginDetails);
 router.get("/getuserdetails", authUser, authController.getUserDetails);
@@ -29,3 +31,7 @@ router.post(
   authUser,
   productControllers.updateAProduct
 );
+
+// customer routes
+router.post("/createcustomer", authUser, customerContollers.createNewCustomer);
+router.get("/getcustomerlist", authUser, customerContollers.getCustomersList);

@@ -7,15 +7,6 @@ const product_errMessage = `Sorry, something went wrong while creating the produ
 const productDelete_errMessage = `Sorry, something went wrong while removing the product. Please try again later.`;
 const productFind_errMessage = `Sorry, something went wrong while getting details of the product. Please try again later.`;
 
-const uploadToCloudinary = async (image_path) => {
-  const cloudinaryDetails = await cloudinary.uploader.upload(image_path, {
-    format: "WebP",
-    // transformation: [{ width: 195, height: 195 }],
-  });
-  fs.unlinkSync(image_path);
-  return cloudinaryDetails.secure_url;
-};
-
 export const productControllers = {
   createProduct: async (req, res) => {
     try {
@@ -160,7 +151,7 @@ export const productControllers = {
     } catch (error) {
       res.status(500).json({
         status: false,
-        message: "somthing went wrong please try again later !",
+        message: "Somthing went wrong please try again later !",
       });
     }
   },
