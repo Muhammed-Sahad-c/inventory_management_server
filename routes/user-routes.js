@@ -53,3 +53,4 @@ router.get(
   reportControllers.getInventoryReports
 );
 router.get("/getsalesreport",authUser, reportControllers.getSalesReports);
+router.get("/getdashboardinfo",reportControllers.getCounts)

@@ -121,4 +121,16 @@ export const reportControllers = {
       res.status(500).json({ message: `Something wen't wrong try again` });
     }
   },
+
+  getCounts: async (req, res) => {
+    try {
+      const productCount = await productModel.find().count();
+      const customerCount = await customerModel.find().count();
+      const salesCount = await salesModel.find().count();
+      res.status(200).json({ productCount, customerCount, salesCount });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "something went wrong" });
+    }
+  },
 };
