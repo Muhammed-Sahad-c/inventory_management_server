@@ -35,8 +35,11 @@ router.post(
 
 // customer routes
 router.post("/createcustomer", authUser, customerContollers.createNewCustomer);
-router.get("/getcustomerlist", authUser, customerContollers.getCustomersList);
-
+router.get("/getcustomerlist", customerContollers.getCustomersList);
+router.get(
+  "/gettransactionlist",
+  customerContollers.getTransactionList
+);
 //sales routes
 router.get(
   "/getdetailsforsales",
@@ -49,4 +52,4 @@ router.get(
   authUser,
   reportControllers.getInventoryReports
 );
-router.get("/getsalesreport", reportControllers.getSalesReports);
+router.get("/getsalesreport",authUser, reportControllers.getSalesReports);
